@@ -1,0 +1,34 @@
+create database Banking1;
+use Banking1;
+create table Branch(branchname varchar(30),branchcity varchar(30),assests real,primary key(branchname));
+desc Branch;
+create table BankAccount(accno int,branchname varchar(30),balance real,primary key(accno),foreign key(branchname) references Branch(branchname));
+desc BankAccount;
+create table BankCustomer(customername varchar(30),customerstreet varchar(30),customercity varchar(30),primary key(customername));
+desc BankCustomer;
+create table Depositer(customername varchar(30),accno int,primary key(customername,accno),foreign key(customername) references BankCustomer(customername),foreign key(accno) references BankAccount(accno));
+desc BankAccount;
+create table Loan(loannumber int,branchname varchar(30),amount real,primary key(loannumber),foreign key(branchname) references Branch(branchname));
+desc Loan;
+insert into Branch values ("sbi_chamrajpet","bangalore",50000),("sbi_residencyroad","bangalore",10000),("sbi_shivajiroad","bombay",20000),("sbi_parliamentroad","delhi",10000),("sbi_jantarmantar","delhi",20000);
+commit;
+select * from Branch;
+insert into Loan values (1,"sbi_chamrajpet",1000),(2,"sbi_residencyroad",2000),(3,"sbi_shivajiroad",3000),(4,"sbi_parliamentroad",4000),(5,"sbi_jantarmantar",5000);
+commit;
+select * from Loan;
+insert into BankAccount values (1,"sbi_chamrajpet",2000),(2,"sbi_residencyroad",5000),(3,"sbi_shivajiroad",6000),(4,"sbi_parliamentroad",9000),(5,"sbi_jantarmantar",8000),(6,"sbi_shivajiroad",4000),(9,"sbi_parliamentroad",3000),(8,"sbi_residencyroad",4000),(10,"sbi_residencyroad",5000),(11,"sbi_jantarmantar",2000);
+commit;
+select * from BankAccount;
+insert into BankCustomer values ("Avinash","bull temple road","bangalore"),("Dinesh","bannergatta road","bangalore"),("Mohan","national college road","bangalore"),("Nikil","akbar road","delhi"),("Ravi","Prithviraj road","delhi");
+commit;
+select * from BankCustomer;
+insert into Depositer values ("Avinash",1),("Dinesh",2),("Nikil",4),("Ravi",5),("Avinash",8),("Nikil",9),("Dinesh",10),("nikil",11);
+commit;
+select * from Depositer;
+
+select c.customername from BankCustomer c where exists (select d.customername,count(d.customername) from depositer d,BankAccount ba where d.accno=ba.accno and c.customername=d.customername and ba.branchname="sbi_residencyroad" group by d.customername having count((d.customername)>=2));
+
+delete from BankAccount where branchname IN (select branchname from Branch where branchcity="bombay");
+select * from BankAccount;
+
+
